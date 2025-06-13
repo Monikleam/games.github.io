@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games For You, My Love ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        .card-flip {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flip.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+        }
+        @keyframes whack {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.8); }
+            100% { transform: scale(1); }
+        }
+        .whack-animation {
+            animation: whack 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 to-purple-100 min-h-screen font-sans">
+    <div id="confetti-container" class="fixed top-0 left-0 w-full h-full pointer-events-none z-50"></div>
+    
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-pink-600 mb-2">Hi Love! <span class="text-purple-600">Ready to play?</span></h1>
+            <p class="text-lg text-gray-600">Choose a game below and have fun!</p>
+            <div class="mt-4">
+                <button id="random-game" class="bg-gradient-to-r from-purple-400 to-pink-500 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all">
+                    <i class="fas fa-random mr-2"></i>Random Game
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Word Jumble -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="word-jumble">
+                <div class="flex items-center mb-4">
+                    <div class="bg-pink-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-font text-pink-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Word Jumble</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Unscramble the letters to find the hidden word!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="word-jumble-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-pink-500 hover:bg-pink-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Word Search -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="word-search">
+                <div class="flex items-center mb-4">
+                    <div class="bg-purple-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-search text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Word Search</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Find all the hidden words in the grid!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="word-search-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-purple-500 hover:bg-purple-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Memory Game -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="memory">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-brain text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Memory Game</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Match all the pairs as quickly as you can!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="memory-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Math Challenge -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="math">
+                <div class="flex items-center mb-4">
+                    <div class="bg-green-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-calculator text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Math Challenge</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Solve as many math problems as you can in 60 seconds!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="math-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Quiz -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="quiz">
+                <div class="flex items-center mb-4">
+                    <div class="bg-yellow-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-question text-yellow-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Quick Quiz</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Test your knowledge with fun multiple-choice questions!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="quiz-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pattern Match -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="pattern">
+                <div class="flex items-center mb-4">
+                    <div class="bg-red-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-project-diagram text-red-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Pattern Match</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Memorize and repeat the sequence of colors!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="pattern-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Whack-a-Cute -->
+            <div class="game-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer" data-game="whack">
+                <div class="flex items-center mb-4">
+                    <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                        <i class="fas fa-heart text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Whack-a-Cute</h3>
+                </div>
+                <p class="text-gray-600 mb-4">Tap the cute characters before they disappear!</p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Best: <span id="whack-best" class="font-bold">0</span></span>
+                    <button class="play-btn bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">
+                        Play <i class="fas fa-play ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modals -->
+    <div id="game-modals" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 hidden">
+        <!-- Word Jumble Modal -->
+        <div id="word-jumble-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Word Jumble</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Category: <span id="jumble-category" class="font-semibold">Animals</span></p>
+                <div id="jumbled-letters" class="bg-pink-50 rounded-lg p-4 text-center text-2xl font-bold tracking-widest text-pink-600 mb-4">
+                    L O V E
+                </div>
+                <div class="flex justify-center space-x-2 mb-4">
+                    <button id="hint-btn" class="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-lightbulb mr-1"></i>Hint
+                    </button>
+                    <button id="new-jumble" class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-sync-alt mr-1"></i>New Word
+                    </button>
+                </div>
+                <div id="hint-text" class="text-sm text-gray-500 italic hidden mb-2"></div>
+                <input type="text" id="jumble-guess" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300" placeholder="Your answer...">
+                <button id="submit-jumble" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-lg mt-2">
+                    Submit
+                </button>
+            </div>
+            <div id="jumble-result" class="text-center hidden">
+                <p class="text-lg font-semibold mb-2"></p>
+                <p class="text-sm text-gray-600 mb-2">Correct word: <span id="correct-word" class="font-bold"></span></p>
+                <button id="next-jumble" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg">
+                    Next Word
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <p class="text-sm text-gray-600">Score: <span id="jumble-score" class="font-bold">0</span></p>
+            </div>
+        </div>
+
+        <!-- Word Search Modal -->
+        <div id="word-search-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Word Search</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Find these words:</p>
+                <div id="word-search-words" class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">LOVE</span>
+                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">HUG</span>
+                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm">KISS</span>
+                </div>
+                <div id="word-search-grid" class="grid grid-cols-5 gap-1 mb-4">
+                    <!-- Grid will be generated by JS -->
+                </div>
+                <div class="flex justify-center space-x-2">
+                    <button id="new-word-search" class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
+                        <i class="fas fa-sync-alt mr-1"></i>New Puzzle
+                    </button>
+                </div>
+            </div>
+            <div class="text-center">
+                <p class="text-sm text-gray-600">Found: <span id="words-found" class="font-bold">0</span>/<span id="total-words">3</span></p>
+            </div>
+        </div>
+
+        <!-- Memory Game Modal -->
+        <div id="memory-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Memory Game</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <p class="text-sm text-gray-600">Time: <span id="memory-time" class="font-bold">0</span>s</p>
+                    <p class="text-sm text-gray-600">Moves: <span id="memory-moves" class="font-bold">0</span></p>
+                </div>
+                <div id="memory-grid" class="grid grid-cols-4 gap-2">
+                    <!-- Cards will be generated by JS -->
+                </div>
+            </div>
+            <div id="memory-result" class="text-center hidden">
+                <p class="text-lg font-semibold mb-2">You won!</p>
+                <p class="text-sm text-gray-600 mb-4">Time: <span id="final-time" class="font-bold">0</span>s | Moves: <span id="final-moves" class="font-bold">0</span></p>
+                <button id="play-again-memory" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Math Challenge Modal -->
+        <div id="math-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Math Challenge</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-gray-600">Time: <span id="math-time" class="font-bold">60</span>s</p>
+                    <p class="text-sm text-gray-600">Score: <span id="math-current-score" class="font-bold">0</span></p>
+                </div>
+                <div id="math-problem" class="text-3xl font-bold text-center mb-6">5 + 3 = ?</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="math-answer bg-green-100 hover:bg-green-200 text-green-800 py-3 rounded-lg">8</button>
+                    <button class="math-answer bg-green-100 hover:bg-green-200 text-green-800 py-3 rounded-lg">7</button>
+                    <button class="math-answer bg-green-100 hover:bg-green-200 text-green-800 py-3 rounded-lg">9</button>
+                    <button class="math-answer bg-green-100 hover:bg-green-200 text-green-800 py-3 rounded-lg">6</button>
+                </div>
+            </div>
+            <div id="math-result" class="text-center hidden">
+                <p class="text-lg font-semibold mb-2">Time's up!</p>
+                <p class="text-sm text-gray-600 mb-4">Final score: <span id="final-math-score" class="font-bold">0</span></p>
+                <button id="play-again-math" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Quiz Modal -->
+        <div id="quiz-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Quick Quiz</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Question <span id="quiz-current">1</span>/<span id="quiz-total">5</span></p>
+                <div id="quiz-category" class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs inline-block mb-3">Animals</div>
+                <p id="quiz-question" class="text-lg font-semibold mb-4">What is the largest mammal on Earth?</p>
+                <div class="space-y-3">
+                    <button class="quiz-option w-full text-left bg-gray-100 hover:bg-gray-200 px-4 py-3 rounded-lg">Elephant</button>
+                    <button class="quiz-option w-full text-left bg-gray-100 hover:bg-gray-200 px-4 py-3 rounded-lg">Blue Whale</button>
+                    <button class="quiz-option w-full text-left bg-gray-100 hover:bg-gray-200 px-4 py-3 rounded-lg">Giraffe</button>
+                    <button class="quiz-option w-full text-left bg-gray-100 hover:bg-gray-200 px-4 py-3 rounded-lg">Polar Bear</button>
+                </div>
+            </div>
+            <div id="quiz-result" class="text-center hidden">
+                <p class="text-lg font-semibold mb-2">Quiz Complete!</p>
+                <p class="text-sm text-gray-600 mb-4">Score: <span id="final-quiz-score" class="font-bold">0</span>/<span id="quiz-max-score">5</span></p>
+                <button id="play-again-quiz" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Pattern Match Modal -->
+        <div id="pattern-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Pattern Match</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">Level: <span id="pattern-level" class="font-bold">1</span></p>
+                <div id="pattern-grid" class="grid grid-cols-2 gap-4 mb-6">
+                    <button class="pattern-color h-24 rounded-lg" data-color="red"></button>
+                    <button class="pattern-color h-24 rounded-lg" data-color="blue"></button>
+                    <button class="pattern-color h-24 rounded-lg" data-color="green"></button>
+                    <button class="pattern-color h-24 rounded-lg" data-color="yellow"></button>
+                </div>
+                <div id="pattern-instructions" class="text-center mb-4">
+                    <p class="text-sm text-gray-600">Watch the sequence and repeat it!</p>
+                </div>
+                <button id="start-pattern" class="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg">
+                    Start
+                </button>
+            </div>
+            <div id="pattern-result" class="text-center hidden">
+                <p class="text-lg font-semibold mb-2">Game Over!</p>
+                <p class="text-sm text-gray-600 mb-4">You reached level <span id="final-pattern-level" class="font-bold">0</span></p>
+                <button id="play-again-pattern" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+
+        <!-- Whack-a-Cute Modal -->
+        <div id="whack-modal" class="game-modal bg-white rounded-2xl p-6 w-full max-w-md mx-4 hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">Whack-a-Cute</h3>
+                <button class="close-modal text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-sm text-gray-600">Time: <span id="whack-time" class="font-bold">30</span>s</p>
+                    <p class="text-sm text-gray-600">Score: <span id="whack-score" class="font-bold">0</span></p>
+                </div>
+                <div id="whack-grid" class="grid grid-cols-3 gap-3">
+                    <div class="whack-hole bg-indigo-100 rounded-full aspect-square flex items-center justify-center">
+                        <div class="whack-character hidden text-3xl"></div>
+                    </div>
+                    <div class="whack-hole bg-indigo-100 rounded-full aspect-square flex items-center justify-center">
+                        <div class="whack-character hidden text-3xl"></div>
+                    </div>
+                    <div class="whack-hole bg-indigo-100 rounded-full aspect-square flex items-center justify-center">
+                        <div class="whack-character hidden text-3xl"></div>
+                    </div>
+                    <div class="whack-hole bg-indigo-100 rounded-full aspect-square flex items-center justify-center">
+                        <div class="whack-character hidden text-3xl"></div>
+                    </div>
+                    <div class="whack-hole bg-indigo-100 rounded-full aspect-square flex items-center justify-center">
+                        <div class="whack-character hidden text-3xl"></div>
+                    </div>
+                    <div class="whack-hole bg-indigo-100 rounded-full aspect-square flex items-center justify-center">
+                        <div class="whack-character hidden text-3xl"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="whack-result" class="text-center hidden">
+                <p class="text-lg font-semibold mb-2">Time's up!</p>
+                <p class="text-sm text-gray-600 mb-4">Final score: <span id="final-whack-score" class="font-bold">0</span></p>
+                <button id="play-again-whack" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                    Play Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load best scores from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load best scores
+            loadBestScores();
+            
+            // Set up game card click handlers
+            document.querySelectorAll('.game-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const game = this.getAttribute('data-game');
+                    openGameModal(game);
+                });
+            });
+            
+            // Set up play button click handlers (same as card click)
+            document.querySelectorAll('.play-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const card = this.closest('.game-card');
+                    const game = card.getAttribute('data-game');
+                    openGameModal(game);
+                });
+            });
+            
+            // Random game button
+            document.getElementById('random-game').addEventListener('click', function() {
+                const games = ['word-jumble', 'word-search', 'memory', 'math', 'quiz', 'pattern', 'whack'];
+                const randomGame = games[Math.floor(Math.random() * games.length)];
+                openGameModal(randomGame);
+            });
+            
+            // Close modal buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+            
+            // Initialize games
+            initWordJumble();
+            initWordSearch();
+            initMemoryGame();
+            initMathGame();
+            initQuizGame();
+            initPatternGame();
+            initWhackGame();
+        });
+        
+        function loadBestScores() {
+            // Word Jumble
+            const jumbleBest = localStorage.getItem('word-jumble-best') || 0;
+            document.getElementById('word-jumble-best').textContent = jumbleBest;
+            
+            // Word Search
+            const searchBest = localStorage.getItem('word-search-best') || 0;
+            document.getElementById('word-search-best').textContent = searchBest;
+            
+            // Memory Game
+            const memoryBest = localStorage.getItem('memory-best') || 0;
+            document.getElementById('memory-best').textContent = memoryBest;
+            
+            // Math Challenge
+            const mathBest = localStorage.getItem('math-best') || 0;
+            document.getElementById('math-best').textContent = mathBest;
+            
+            // Quick Quiz
+            const quizBest = localStorage.getItem('quiz-best') || 0;
+            document.getElementById('quiz-best').textContent = quizBest;
+            
+            // Pattern Match
+            const patternBest = localStorage.getItem('pattern-best') || 0;
+            document.getElementById('pattern-best').textContent = patternBest;
+            
+            // Whack-a-Cute
+            const whackBest = localStorage.getItem('whack-best') || 0;
+            document.getElementById('whack-best').textContent = whackBest;
+        }
+        
+        function openGameModal(game) {
+            document.getElementById('game-modals').classList.remove('hidden');
+            document.getElementById(`${game}-modal`).classList.remove('hidden');
+            
+            // Reset the game when opening
+            if (typeof window[`reset${game.replace('-', '')}Game`] === 'function') {
+                window[`reset${game.replace('-', '')}Game`]();
+            }
+        }
+        
+        function closeAllModals() {
+            document.getElementById('game-modals').classList.add('hidden');
+            document.querySelectorAll('.game-modal').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+        
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -10 + 'px';
+                confetti.style.opacity = '1';
+                
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+                
+                const shape = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.borderRadius = shape;
+                
+                const rotation = Math.random() * 360;
+                confetti.style.transform = `rotate(${rotation}deg)`;
+                
+                const animationDuration = Math.random() * 3 + 2;
+                confetti.style.animation = `fall ${animationDuration}s linear forwards`;
+                
+                document.getElementById('confetti-container').appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, animationDuration * 1000);
+            }
+            
+            // Add falling animation
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Word Jumble Game
+        function initWordJumble() {
+            const categories = {
+                animals: ['elephant', 'giraffe', 'kangaroo', 'dolphin', 'butterfly', 'cat', 'dog', 'hippopotamus', 'dragon',],
+                love: ['romance', 'affection', 'passion', 'devotion', 'adoration', 'imissyou', 'iloveyou', 'dedeako', 'kissmoako'],
+                space: ['planet', 'galaxy', 'asteroid', 'telescope', 'astronaut', 'star', 'atom', 'astronomer', 'neutron'],
+                food: ['pizza', 'spaghetti', 'chocolate', 'avocado', 'strawberry', 'humburger', 'banana', 'beer', 'dede ko', 'pussy']
+            };
+            
+            let currentCategory = 'animals';
+            let currentWord = '';
+            let jumbledWord = '';
+            let score = 0;
+            let hintUsed = false;
+            
+            document.getElementById('new-jumble').addEventListener('click', newWord);
+            document.getElementById('hint-btn').addEventListener('click', giveHint);
+            document.getElementById('submit-jumble').addEventListener('click', checkAnswer);
+            document.getElementById('next-jumble').addEventListener('click', newWord);
+            document.getElementById('jumble-guess').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') checkAnswer();
+            });
+            
+            function newWord() {
+                hintUsed = false;
+                document.getElementById('hint-text').classList.add('hidden');
+                document.getElementById('jumble-result').classList.add('hidden');
+                document.getElementById('jumble-guess').value = '';
+                
+                // Select random category
+                const categoryKeys = Object.keys(categories);
+                currentCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+                document.getElementById('jumble-category').textContent = currentCategory;
+                
+                // Select random word from category
+                currentWord = categories[currentCategory][Math.floor(Math.random() * categories[currentCategory].length)];
+                
+                // Jumble the word
+                jumbledWord = currentWord.split('').sort(() => Math.random() - 0.5).join('').toUpperCase();
+                
+                // If the jumbled word is the same as the original, try again
+                if (jumbledWord.toLowerCase() === currentWord) {
+                    return newWord();
+                }
+                
+                document.getElementById('jumbled-letters').textContent = jumbledWord.split('').join(' ');
+            }
+            
+            function giveHint() {
+                if (hintUsed) return;
+                
+                hintUsed = true;
+                const hintText = `The word starts with "${currentWord[0].toUpperCase()}" and ends with "${currentWord[currentWord.length - 1].toUpperCase()}"`;
+                document.getElementById('hint-text').textContent = hintText;
+                document.getElementById('hint-text').classList.remove('hidden');
+            }
+            
+            function checkAnswer() {
+                const guess = document.getElementById('jumble-guess').value.trim().toLowerCase();
+                
+                if (guess === currentWord) {
+                    // Correct answer
+                    score += hintUsed ? 5 : 10;
+                    document.getElementById('jumble-score').textContent = score;
+                    
+                    document.getElementById('jumble-result').classList.remove('hidden');
+                    document.getElementById('jumble-result').querySelector('p').textContent = 'Correct! Well done!';
+                    document.getElementById('correct-word').textContent = currentWord;
+                    
+                    // Update best score if needed
+                    const bestScore = parseInt(localStorage.getItem('word-jumble-best') || 0);
+                    if (score > bestScore) {
+                        localStorage.setItem('word-jumble-best', score);
+                        document.getElementById('word-jumble-best').textContent = score;
+                        createConfetti();
+                    }
+                } else {
+                    // Wrong answer
+                    document.getElementById('jumble-result').classList.remove('hidden');
+                    document.getElementById('jumble-result').querySelector('p').textContent = 'Oops! Try again!';
+                    document.getElementById('correct-word').textContent = currentWord;
+                }
+            }
+            
+            // Initialize first word
+            newWord();
+        }
+        
+        // Word Search Game
+        function initWordSearch() {
+            const puzzles = [
+                {
+                    words: ['love', 'hug', 'kiss'],
+                    grid: [
+                        ['L', 'O', 'V', 'E', 'X'],
+                        ['Y', 'Z', 'H', 'U', 'G'],
+                        ['A', 'B', 'C', 'D', 'K'],
+                        ['I', 'S', 'S', 'F', 'J'],
+                        ['M', 'N', 'O', 'P', 'Q']
+                    ]
+                },
+                {
+                    words: ['heart', 'smile', 'happy'],
+                    grid: [
+                        ['H', 'E', 'A', 'R', 'T'],
+                        ['S', 'M', 'I', 'L', 'E'],
+                        ['A', 'B', 'C', 'D', 'F'],
+                        ['P', 'P', 'Y', 'G', 'H'],
+                        ['I', 'J', 'K', 'L', 'M']
+                    ]
+                },
+                {
+                    words: ['cat', 'dog', 'fish'],
+                    grid: [
+                        ['C', 'A', 'T', 'X', 'Y'],
+                        ['D', 'O', 'G', 'Z', 'W'],
+                        ['F', 'I', 'S', 'H', 'F'],
+                        ['A', 'B', 'C', 'T', 'G'],
+                        ['L', 'I', 'N', 'L', 'B']
+                    ]
+                },
+               {
+                    words: ['star', 'moon', 'sun'],
+                    grid: [
+                        ['S', 'T', 'A', 'R', 'X'],
+                        ['A', 'U', 'Z', 'M', 'P'],
+                        ['U', 'M', 'N', 'O', 'N'],
+                        ['N', 'N', 'X', 'O', 'Q'],
+                        ['O', 'L', 'M', 'N', 'P']
+                    ]
+                },
+                {
+                    words: ['hope', 'dream', 'wish'],
+                    grid: [
+                        ['H', 'O', 'P', 'E', 'X'],
+                        ['I', 'M', 'H', 'A', 'M'],
+                        ['W', 'I', 'S', 'H', 'A'],
+                        ['I', 'B', 'P', 'R', 'R'],
+                        ['M', 'I', 'E', 'R', 'D']
+                    ]
+                },
+                {
+                    words: ['sun', 'moon', 'star'],
+                    grid: [
+                        ['S', 'U', 'N', 'A', 'B'],
+                        ['C', 'D', 'E', 'F', 'G'],
+                        ['M', 'O', 'O', 'N', 'H'],
+                        ['I', 'J', 'K', 'L', 'S'],
+                        ['T', 'A', 'R', 'P', 'Q']
+                    ]
+                }
+            ];
+            
+            let currentPuzzle = null;
+            let foundWords = [];
+            let selectedCells = [];
+            
+            document.getElementById('new-word-search').addEventListener('click', newPuzzle);
+            
+            function newPuzzle() {
+                foundWords = [];
+                selectedCells = [];
+                currentPuzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
+                
+                // Update word list
+                const wordList = document.getElementById('word-search-words');
+                wordList.innerHTML = '';
+                currentPuzzle.words.forEach(word => {
+                    const span = document.createElement('span');
+                    span.className = 'bg-purple-100 text-purple-800 px-2 py-1 rounded text-sm';
+                    span.textContent = word.toUpperCase();
+                    span.id = `word-${word}`;
+                    wordList.appendChild(span);
+                });
+                
+                // Update total words count
+                document.getElementById('total-words').textContent = currentPuzzle.words.length;
+                document.getElementById('words-found').textContent = foundWords.length;
+                
+                // Create grid
+                const grid = document.getElementById('word-search-grid');
+                grid.innerHTML = '';
+                
+                currentPuzzle.grid.forEach((row, rowIndex) => {
+                    row.forEach((letter, colIndex) => {
+                        const cell = document.createElement('div');
+                        cell.className = 'bg-purple-50 text-purple-800 font-bold text-center py-3 rounded cursor-pointer select-none';
+                        cell.textContent = letter;
+                        cell.dataset.row = rowIndex;
+                        cell.dataset.col = colIndex;
+                        cell.addEventListener('mousedown', startSelection);
+                        cell.addEventListener('mouseenter', continueSelection);
+                        cell.addEventListener('mouseup', endSelection);
+                        grid.appendChild(cell);
+                    });
+                });
+            }
+            
+            function startSelection(e) {
+                selectedCells = [e.target];
+                e.target.classList.add('bg-purple-300');
+            }
+            
+            function continueSelection(e) {
+                if (selectedCells.length === 0) return;
+                
+                const cell = e.target;
+                const lastCell = selectedCells[selectedCells.length - 1];
+                
+                // Check if cell is adjacent to last selected cell
+                const rowDiff = Math.abs(parseInt(cell.dataset.row) - parseInt(lastCell.dataset.row));
+                const colDiff = Math.abs(parseInt(cell.dataset.col) - parseInt(lastCell.dataset.col));
+                
+                if ((rowDiff <= 1 && colDiff <= 1) && !(rowDiff === 0 && colDiff === 0)) {
+                    // Check if we're going in a straight line
+                    if (selectedCells.length >= 2) {
+                        const firstDirRow = parseInt(selectedCells[1].dataset.row) - parseInt(selectedCells[0].dataset.row);
+                        const firstDirCol = parseInt(selectedCells[1].dataset.col) - parseInt(selectedCells[0].dataset.col);
+                        
+                        const currentDirRow = parseInt(cell.dataset.row) - parseInt(lastCell.dataset.row);
+                        const currentDirCol = parseInt(cell.dataset.col) - parseInt(lastCell.dataset.col);
+                        
+                        if (firstDirRow !== currentDirRow || firstDirCol !== currentDirCol) {
+                            return; // Not going in the same direction
+                        }
+                    }
+                    
+                    // Add to selection if not already selected
+                    if (!selectedCells.includes(cell)) {
+                        selectedCells.push(cell);
+                        cell.classList.add('bg-purple-300');
+                    }
+                }
+            }
+            
+            function endSelection() {
+                if (selectedCells.length < 2) {
+                    // Not enough cells selected
+                    selectedCells.forEach(cell => cell.classList.remove('bg-purple-300'));
+                    selectedCells = [];
+                    return;
+                }
+                
+                // Get the selected word
+                const selectedWord = selectedCells.map(cell => cell.textContent).join('').toLowerCase();
+                const selectedWordReversed = [...selectedCells].reverse().map(cell => cell.textContent).join('').toLowerCase();
+                
+                // Check if word is in puzzle
+                let foundWord = null;
+                currentPuzzle.words.forEach(word => {
+                    if (word === selectedWord || word === selectedWordReversed) {
+                        foundWord = word;
+                    }
+                });
+                
+                if (foundWord && !foundWords.includes(foundWord)) {
+                    // Word found!
+                    foundWords.push(foundWord);
+                    document.getElementById(`word-${foundWord}`).classList.remove('bg-purple-100');
+                    document.getElementById(`word-${foundWord}`).classList.add('bg-green-100', 'text-green-800', 'line-through');
+                    
+                    // Highlight the found word in the grid
+                    selectedCells.forEach(cell => {
+                        cell.classList.remove('bg-purple-300');
+                        cell.classList.add('bg-green-300');
+                    });
+                    
+                    // Update score
+                    document.getElementById('words-found').textContent = foundWords.length;
+                    
+                    // Check if all words found
+                    if (foundWords.length === currentPuzzle.words.length) {
+                        // Update best score if needed
+                        const bestScore = parseInt(localStorage.getItem('word-search-best') || 0);
+                        if (foundWords.length > bestScore) {
+                            localStorage.setItem('word-search-best', foundWords.length);
+                            document.getElementById('word-search-best').textContent = foundWords.length;
+                            createConfetti();
+                        }
+                    }
+                } else {
+                    // Word not found
+                    selectedCells.forEach(cell => {
+                        cell.classList.remove('bg-purple-300');
+                        setTimeout(() => {
+                            cell.classList.add('bg-red-300');
+                            setTimeout(() => {
+                                cell.classList.remove('bg-red-300');
+                            }, 300);
+                        }, 100);
+                    });
+                }
+                
+                selectedCells = [];
+            }
+            
+            // Initialize first puzzle
+            newPuzzle();
+        }
+        
+        // Memory Game
+        function initMemoryGame() {
+            const icons = ['heart', 'cat', 'dog', 'star', 'moon', 'sun', 'cloud', 'music', 'heart'];
+            let cards = [];
+            let flippedCards = [];
+            let matchedPairs = 0;
+            let moves = 0;
+            let timer = null;
+            let seconds = 0;
+            let gameStarted = false;
+            
+            document.getElementById('play-again-memory').addEventListener('click', resetMemoryGame);
+            
+            function createBoard() {
+                const grid = document.getElementById('memory-grid');
+                grid.innerHTML = '';
+                
+                // Create pairs of cards
+                const cardValues = [...icons, ...icons];
+                
+                // Shuffle cards
+                for (let i = cardValues.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cardValues[i], cardValues[j]] = [cardValues[j], cardValues[i]];
+                }
+                
+                // Create card elements
+                cards = [];
+                cardValues.forEach((value, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'card-flip relative cursor-pointer aspect-square';
+                    card.dataset.index = index;
+                    
+                    const cardFront = document.createElement('div');
+                    cardFront.className = 'card-front bg-blue-500 rounded-lg flex items-center justify-center';
+                    
+                    const cardBack = document.createElement('div');
+                    cardBack.className = 'card-back bg-white rounded-lg flex items-center justify-center';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = `fas fa-${value} text-blue-600 text-2xl`;
+                    
+                    cardBack.appendChild(icon);
+                    card.appendChild(cardFront);
+                    card.appendChild(cardBack);
+                    
+                    card.addEventListener('click', () => flipCard(card));
+                    grid.appendChild(card);
+                    
+                    cards.push({
+                        element: card,
+                        value: value,
+                        flipped: false,
+                        matched: false
+                    });
+                });
+            }
+            
+            function flipCard(card) {
+                if (!gameStarted) {
+                    gameStarted = true;
+                    startTimer();
+                }
+                
+                const index = parseInt(card.dataset.index);
+                const cardData = cards[index];
+                
+                // Don't flip if already flipped or matched
+                if (cardData.flipped || cardData.matched || flippedCards.length >= 2) {
+                    return;
+                }
+                
+                // Flip the card
+                card.classList.add('flipped');
+                cardData.flipped = true;
+                flippedCards.push(cardData);
+                
+                // Check for match if two cards are flipped
+                if (flippedCards.length === 2) {
+                    moves++;
+                    document.getElementById('memory-moves').textContent = moves;
+                    
+                    if (flippedCards[0].value === flippedCards[1].value) {
+                        // Match found
+                        flippedCards.forEach(card => {
+                            card.matched = true;
+                        });
+                        
+                        matchedPairs++;
+                        
+                        // Check if game is complete
+                        if (matchedPairs === icons.length) {
+                            clearInterval(timer);
+                            document.getElementById('final-time').textContent = seconds;
+                            document.getElementById('final-moves').textContent = moves;
+                            document.getElementById('memory-result').classList.remove('hidden');
+                            
+                            // Update best score if needed
+                            const bestScore = parseInt(localStorage.getItem('memory-best') || 0);
+                            if (matchedPairs > bestScore) {
+                                localStorage.setItem('memory-best', matchedPairs);
+                                document.getElementById('memory-best').textContent = matchedPairs;
+                                createConfetti();
+                            }
+                        }
+                        
+                        flippedCards = [];
+                    } else {
+                        // No match - flip back after delay
+                        setTimeout(() => {
+                            flippedCards.forEach(card => {
+                                card.element.classList.remove('flipped');
+                                card.flipped = false;
+                            });
+                            flippedCards = [];
+                        }, 1000);
+                    }
+                }
+            }
+            
+            function startTimer() {
+                seconds = 0;
+                document.getElementById('memory-time').textContent = seconds;
+                timer = setInterval(() => {
+                    seconds++;
+                    document.getElementById('memory-time').textContent = seconds;
+                }, 1000);
+            }
+            
+            function resetMemoryGame() {
+                clearInterval(timer);
+                gameStarted = false;
+                flippedCards = [];
+                matchedPairs = 0;
+                moves = 0;
+                seconds = 0;
+                
+                document.getElementById('memory-time').textContent = '0';
+                document.getElementById('memory-moves').textContent = '0';
+                document.getElementById('memory-result').classList.add('hidden');
+                
+                createBoard();
+            }
+            
+            // Initialize game
+            resetMemoryGame();
+        }
+        
+        // Math Challenge Game
+        function initMathGame() {
+            let score = 0;
+            let timeLeft = 60;
+            let timer = null;
+            let currentProblem = null;
+            
+            document.getElementById('play-again-math').addEventListener('click', resetMathGame);
+            document.querySelectorAll('.math-answer').forEach(btn => {
+                btn.addEventListener('click', checkMathAnswer);
+            });
+            
+            function generateProblem() {
+                const operations = ['+', '-', '*', '/'];
+                const operation = operations[Math.floor(Math.random() * operations.length)];
+                
+                let num1, num2, answer;
+                
+                switch (operation) {
+                    case '+':
+                        num1 = Math.floor(Math.random() * 50) + 1;
+                        num2 = Math.floor(Math.random() * 50) + 1;
+                        answer = num1 + num2;
+                        break;
+                    case '-':
+                        num1 = Math.floor(Math.random() * 50) + 1;
+                        num2 = Math.floor(Math.random() * num1) + 1;
+                        answer = num1 - num2;
+                        break;
+                    case '*':
+                        num1 = Math.floor(Math.random() * 12) + 1;
+                        num2 = Math.floor(Math.random() * 12) + 1;
+                        answer = num1 * num2;
+                        break;
+                    case '/':
+                        num2 = Math.floor(Math.random() * 10) + 1;
+                        answer = Math.floor(Math.random() * 10) + 1;
+                        num1 = num2 * answer;
+                        break;
+                }
+                
+                currentProblem = {
+                    num1: num1,
+                    num2: num2,
+                    operation: operation,
+                    answer: answer
+                };
+                
+                document.getElementById('math-problem').textContent = `${num1} ${operation} ${num2} = ?`;
+                
+                // Generate answer options
+                const options = [answer];
+                while (options.length < 4) {
+                    let wrongAnswer;
+                    if (operation === '/') {
+                        wrongAnswer = Math.floor(Math.random() * 10) + 1;
+                    } else {
+                        wrongAnswer = answer + (Math.floor(Math.random() * 10) - 5);
+                    }
+                    
+                    if (wrongAnswer !== answer && !options.includes(wrongAnswer) && wrongAnswer > 0) {
+                        options.push(wrongAnswer);
+                    }
+                }
+                
+                // Shuffle options
+                for (let i = options.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [options[i], options[j]] = [options[j], options[i]];
+                }
+                
+                // Update answer buttons
+                const answerButtons = document.querySelectorAll('.math-answer');
+                answerButtons.forEach((btn, index) => {
+                    btn.textContent = options[index];
+                });
+            }
+            
+            function checkMathAnswer(e) {
+                const selectedAnswer = parseInt(e.target.textContent);
+                
+                if (selectedAnswer === currentProblem.answer) {
+                    // Correct answer
+                    score++;
+                    document.getElementById('math-current-score').textContent = score;
+                    e.target.classList.remove('bg-green-100', 'hover:bg-green-200');
+                    e.target.classList.add('bg-green-500', 'text-white');
+                    
+                    setTimeout(() => {
+                        e.target.classList.remove('bg-green-500', 'text-white');
+                        e.target.classList.add('bg-green-100', 'hover:bg-green-200');
+                        generateProblem();
+                    }, 500);
+                } else {
+                    // Wrong answer
+                    e.target.classList.remove('bg-green-100', 'hover:bg-green-200');
+                    e.target.classList.add('bg-red-500', 'text-white');
+                    
+                    setTimeout(() => {
+                        e.target.classList.remove('bg-red-500', 'text-white');
+                        e.target.classList.add('bg-green-100', 'hover:bg-green-200');
+                        generateProblem();
+                    }, 500);
+                }
+            }
+            
+            function startTimer() {
+                timeLeft = 60;
+                document.getElementById('math-time').textContent = timeLeft;
+                timer = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('math-time').textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        document.getElementById('final-math-score').textContent = score;
+                        document.getElementById('math-result').classList.remove('hidden');
+                        
+                        // Update best score if needed
+                        const bestScore = parseInt(localStorage.getItem('math-best') || 0);
+                        if (score > bestScore) {
+                            localStorage.setItem('math-best', score);
+                            document.getElementById('math-best').textContent = score;
+                            createConfetti();
+                        }
+                    }
+                }, 1000);
+            }
+            
+            function resetMathGame() {
+                clearInterval(timer);
+                score = 0;
+                timeLeft = 60;
+                
+                document.getElementById('math-current-score').textContent = '0';
+                document.getElementById('math-time').textContent = '60';
+                document.getElementById('math-result').classList.add('hidden');
+                
+                generateProblem();
+                startTimer();
+            }
+            
+            // Initialize game
+            resetMathGame();
+        }
+        
+        // Quick Quiz Game
+        function initQuizGame() {
+            const questions = [
+                {
+                    category: 'Animals',
+                    question: 'What is the largest mammal on Earth?',
+                    options: ['Elephant', 'Blue Whale', 'Giraffe', 'Polar Bear'],
+                    answer: 'Blue Whale'
+                },
+                {
+                    category: 'Love',
+                    question: 'Which flower is commonly associated with love?',
+                    options: ['Sunflower', 'Rose', 'Tulip', 'Daisy'],
+                    answer: 'Rose'
+                },
+                {
+                    category: 'Space',
+                    question: 'Which planet is known as the Red Planet?',
+                    options: ['Venus', 'Mars', 'Jupiter', 'Saturn'],
+                    answer: 'Mars'
+                },
+                {
+                    category: 'Animals',
+                    question: 'Which animal is known as the "King of the Jungle"?',
+                    options: ['Tiger', 'Elephant', 'Lion', 'Gorilla'],
+                    answer: 'Lion'
+                },
+                {
+                    category: 'Love',
+                    question: 'What is the traditional gift for a 25th wedding anniversary?',
+                    options: ['Silver', 'Gold', 'Diamond', 'Pearl'],
+                    answer: 'Silver'
+                },
+                {
+                    category: 'Space',
+                    question: 'What is the name of our galaxy?',
+                    options: ['Andromeda', 'Milky Way', 'Whirlpool', 'Sombrero'],
+                    answer: 'Milky Way'
+                },
+                {
+                    category: 'Animals',
+                    question: 'Which bird is known for its colorful plumage and ability to mimic sounds?',
+                    options: ['Peacock', 'Parrot', 'Flamingo', 'Swan'],
+                    answer: 'Parrot'
+                },
+                {
+                    category: 'Love',
+                    question: 'Which month is Valentine\'s Day celebrated in?',
+                    options: ['January', 'February', 'March', 'April'],
+                    answer: 'February'
+                },
+                {
+                    category: 'Space',
+                    question: 'What is the closest star to Earth?',
+                    options: ['Proxima Centauri', 'Alpha Centauri', 'Sun', 'Sirius'],
+                    answer: 'Sun'
+                },
+                {
+                    category: 'Animals',
+                    question: 'Which animal is known as the king of the jungle?',
+                    options: ['Lion', 'Tiger', 'Elephant', 'Bear'],
+                    answer: 'Lion'
+                },
+                {
+                    category: 'Love',
+                    question: 'What is considered the most erogenous zone on the human body',
+                    options: ['Neck', 'Ears', 'Feet', 'Hands'],
+                    answer: 'Neck'
+                },
+                {
+                    category: 'Love',
+                    question: 'Which sense is most closely tied to attraction?',
+                    options: ['Sight', 'Smell', 'Touch', 'Taste'],
+                    answer: 'Smell'
+                },
+                {
+                    category: 'Animals',
+                    question: 'What is the fastest land animal?',
+                    options: ['Cheetah', 'Horse', 'Leopard', 'Antelope'],
+                    answer: 'Cheetah'
+                },
+                {
+                    category: 'Space',
+                    question: 'What is the name of the first satellite sent into space?',
+                    options: ['Sputnik 1', 'Voyager 1', 'Apollo 11', 'Hubble'],
+                    answer: 'Sputnik 1'
+                },
+                {
+                    category: 'love',
+                    question: 'anong gusto ko sayo?',
+                    options: ['eyes', 'dede', 'boobies', 'tits'],
+                    answer: 'eyes'
+                },
+                {
+                    category: 'love',
+                    question: 'love mo ako?',
+                    options: ['yes', 'oo', 'yes madam', 'syempre'],
+                    answer: 'yes madam'
+                },
+                {
+                    category: 'love',
+                    question: 'pag may humarot sayo, anong isasagot mo?',
+                    options: ['harotin pabalik', 'dedma', 'sumbong kay baby', 'i-block agad'],
+                    answer: 'sumbong kay baby'
+                },
+                {
+                    category: 'love',
+                    question: 'Anong ibig sabihin pag sinabing "Pahiram ng ballpen?',
+                    options: ['Walang dalang ballpen', 'Type ka niya', 'May kailangan lang talaga', 'Gusto lang mang-abala'],
+                    answer: 'Type ka niya'
+                },
+                {
+                    category: 'love',
+                    question: 'May nag-chat sayo ng "Hi, ganda/handsome," anong gagawin mo?',
+                    options: ['Reply agad', 'Seen zone', 'I-block', 'Send screenshot kay jowa'],
+                    answer: 'Send screenshot kay jowa'
+                },
+                {
+                    category: 'love',
+                    question: 'anong gagawin pag nagtatampo ako?',
+                    options: ['pa-dedein', 'pa-dedein', 'pa-dedein', 'pa-dedein'],
+                    answer: 'pa-dedein'
+                },
+
+            ];
+            
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let quizQuestions = [];
+            
+            document.getElementById('play-again-quiz').addEventListener('click', resetQuizGame);
+            
+            function startQuiz() {
+                // Select 5 random questions
+                quizQuestions = [...questions];
+                for (let i = quizQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [quizQuestions[i], quizQuestions[j]] = [quizQuestions[j], quizQuestions[i]];
+                }
+                quizQuestions = quizQuestions.slice(0, 10);
+                
+                currentQuestionIndex = 0;
+                score = 0;
+                
+                document.getElementById('quiz-current').textContent = '1';
+                document.getElementById('quiz-total').textContent = quizQuestions.length;
+                document.getElementById('quiz-result').classList.add('hidden');
+                
+                showQuestion();
+            }
+            
+            function showQuestion() {
+                const question = quizQuestions[currentQuestionIndex];
+                
+                document.getElementById('quiz-category').textContent = question.category;
+                document.getElementById('quiz-question').textContent = question.question;
+                
+                const options = document.querySelectorAll('.quiz-option');
+                options.forEach((option, index) => {
+                    option.textContent = question.options[index];
+                    option.classList.remove('bg-green-100', 'bg-red-100', 'text-green-800', 'text-red-800');
+                    option.classList.add('bg-gray-100', 'hover:bg-gray-200');
+                    option.onclick = () => checkAnswer(option, question.answer);
+                });
+                
+                document.getElementById('quiz-current').textContent = currentQuestionIndex + 1;
+            }
+            
+            function checkAnswer(selectedOption, correctAnswer) {
+                const selectedText = selectedOption.textContent;
+                
+                if (selectedText === correctAnswer) {
+                    // Correct answer
+                    score++;
+                    selectedOption.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                    selectedOption.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    // Wrong answer
+                    selectedOption.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                    selectedOption.classList.add('bg-red-100', 'text-red-800');
+                    
+                    // Highlight correct answer
+                    const options = document.querySelectorAll('.quiz-option');
+                    options.forEach(option => {
+                        if (option.textContent === correctAnswer) {
+                            option.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+                            option.classList.add('bg-green-100', 'text-green-800');
+                        }
+                    });
+                }
+                
+                // Disable all options
+                const options = document.querySelectorAll('.quiz-option');
+                options.forEach(option => {
+                    option.onclick = null;
+                });
+                
+                // Move to next question or show results
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    
+                    if (currentQuestionIndex < quizQuestions.length) {
+                        showQuestion();
+                    } else {
+                        // Quiz complete
+                        document.getElementById('final-quiz-score').textContent = score;
+                        document.getElementById('quiz-max-score').textContent = quizQuestions.length;
+                        document.getElementById('quiz-result').classList.remove('hidden');
+                        
+                        // Update best score if needed
+                        const bestScore = parseInt(localStorage.getItem('quiz-best') || 0);
+                        if (score > bestScore) {
+                            localStorage.setItem('quiz-best', score);
+                            document.getElementById('quiz-best').textContent = score;
+                            createConfetti();
+                        }
+                    }
+                }, 1000);
+            }
+            
+            function resetQuizGame() {
+                startQuiz();
+            }
+            
+            // Initialize quiz
+            startQuiz();
+        }
+        
+        // Pattern Match Game
+        function initPatternGame() {
+            const colors = ['red', 'blue', 'green', 'yellow'];
+            let sequence = [];
+            let playerSequence = [];
+            let level = 1;
+            let isPlaying = false;
+            let isPlayerTurn = false;
+            
+            document.getElementById('start-pattern').addEventListener('click', startGame);
+            document.getElementById('play-again-pattern').addEventListener('click', resetPatternGame);
+            
+            function startGame() {
+                isPlaying = true;
+                level = 1;
+                sequence = [];
+                playerSequence = [];
+                
+                document.getElementById('pattern-instructions').textContent = 'Watch the sequence carefully...';
+                document.getElementById('start-pattern').classList.add('hidden');
+                document.getElementById('pattern-result').classList.add('hidden');
+                
+                nextLevel();
+            }
+            
+            function nextLevel() {
+                document.getElementById('pattern-level').textContent = level;
+                
+                // Add a new color to the sequence
+                sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+                
+                // Show the sequence to the player
+                showSequence();
+            }
+            
+            function showSequence() {
+                isPlayerTurn = false;
+                let i = 0;
+                
+                const interval = setInterval(() => {
+                    if (i >= sequence.length) {
+                        clearInterval(interval);
+                        isPlayerTurn = true;
+                        document.getElementById('pattern-instructions').textContent = 'Your turn! Repeat the sequence.';
+                        return;
+                    }
+                    
+                    const color = sequence[i];
+                    const button = document.querySelector(`.pattern-color[data-color="${color}"]`);
+                    
+                    // Highlight the button
+                    button.classList.add(`bg-${color}-500`);
+                    button.classList.remove(`bg-${color}-200`);
+                    
+                    // Play sound (simulated with class change)
+                    button.classList.add('scale-105');
+                    
+                    setTimeout(() => {
+                        button.classList.remove(`bg-${color}-500`);
+                        button.classList.add(`bg-${color}-200`);
+                        button.classList.remove('scale-105');
+                    }, 500);
+                    
+                    i++;
+                }, 1000);
+            }
+            
+            function resetPatternGame() {
+                isPlaying = false;
+                document.getElementById('pattern-result').classList.add('hidden');
+                document.getElementById('start-pattern').classList.remove('hidden');
+                document.getElementById('pattern-instructions').textContent = 'Watch the sequence and repeat it!';
+            }
+            
+            // Set up color buttons
+            document.querySelectorAll('.pattern-color').forEach(button => {
+                const color = button.dataset.color;
+                button.classList.add(`bg-${color}-200`);
+                
+                button.addEventListener('click', () => {
+                    if (!isPlaying || !isPlayerTurn) return;
+                    
+                    // Add to player sequence
+                    playerSequence.push(color);
+                    
+                    // Highlight the button
+                    button.classList.add(`bg-${color}-500`);
+                    button.classList.remove(`bg-${color}-200`);
+                    button.classList.add('whack-animation');
+                    
+                    setTimeout(() => {
+                        button.classList.remove(`bg-${color}-500`);
+                        button.classList.add(`bg-${color}-200`);
+                        button.classList.remove('whack-animation');
+                    }, 200);
+                    
+                    // Check if the sequence is correct
+                    if (playerSequence[playerSequence.length - 1] !== sequence[playerSequence.length - 1]) {
+                        // Wrong sequence - game over
+                        isPlaying = false;
+                        document.getElementById('final-pattern-level').textContent = level - 1;
+                        document.getElementById('pattern-result').classList.remove('hidden');
+                        
+                        // Update best score if needed
+                        const bestScore = parseInt(localStorage.getItem('pattern-best') || 0);
+                        if (level - 1 > bestScore) {
+                            localStorage.setItem('pattern-best', level - 1);
+                            document.getElementById('pattern-best').textContent = level - 1;
+                            createConfetti();
+                        }
+                    } else if (playerSequence.length === sequence.length) {
+                        // Correct sequence - next level
+                        isPlayerTurn = false;
+                        playerSequence = [];
+                        level++;
+                        
+                        setTimeout(() => {
+                            nextLevel();
+                        }, 1000);
+                    }
+                });
+            });
+        }
+        
+        // Whack-a-Cute Game
+        function initWhackGame() {
+            const characters = ['heart', 'cat', 'dog', 'star', 'smile'];
+            let score = 0;
+            let timeLeft = 30;
+            let timer = null;
+            let gameActive = false;
+            let characterInterval = null;
+            
+            document.getElementById('play-again-whack').addEventListener('click', resetWhackGame);
+            
+            function startGame() {
+                gameActive = true;
+                score = 0;
+                timeLeft = 30;
+                
+                document.getElementById('whack-score').textContent = '0';
+                document.getElementById('whack-time').textContent = '30';
+                document.getElementById('whack-result').classList.add('hidden');
+                
+                // Start timer
+                timer = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('whack-time').textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        endGame();
+                    }
+                }, 1000);
+                
+                // Start showing characters
+                characterInterval = setInterval(showRandomCharacter, 800);
+            }
+            
+            function showRandomCharacter() {
+                if (!gameActive) return;
+                
+                // Hide all characters first
+                document.querySelectorAll('.whack-character').forEach(char => {
+                    char.classList.add('hidden');
+                });
+                
+                // Select a random hole
+                const holes = document.querySelectorAll('.whack-hole');
+                const randomHole = holes[Math.floor(Math.random() * holes.length)];
+                
+                // Select a random character
+                const randomChar = characters[Math.floor(Math.random() * characters.length)];
+                
+                // Show the character
+                const character = randomHole.querySelector('.whack-character');
+                character.className = `whack-character fas fa-${randomChar} text-${getColorForCharacter(randomChar)}-500`;
+                character.classList.remove('hidden');
+                
+                // Hide after a delay
+                setTimeout(() => {
+                    if (character.classList.contains('hidden')) return;
+                    
+                    character.classList.add('hidden');
+                }, 1000);
+            }
+            
+            function getColorForCharacter(char) {
+                switch (char) {
+                    case 'heart': return 'pink';
+                    case 'cat': return 'orange';
+                    case 'dog': return 'brown';
+                    case 'star': return 'yellow';
+                    case 'smile': return 'blue';
+                    default: return 'indigo';
+                }
+            }
+            
+            function endGame() {
+                gameActive = false;
+                clearInterval(timer);
+                clearInterval(characterInterval);
+                
+                // Hide all characters
+                document.querySelectorAll('.whack-character').forEach(char => {
+                    char.classList.add('hidden');
+                });
+                
+                document.getElementById('final-whack-score').textContent = score;
+                document.getElementById('whack-result').classList.remove('hidden');
+                
+                // Update best score if needed
+                const bestScore = parseInt(localStorage.getItem('whack-best') || 0);
+                if (score > bestScore) {
+                    localStorage.setItem('whack-best', score);
+                    document.getElementById('whack-best').textContent = score;
+                    createConfetti();
+                }
+            }
+            
+            function resetWhackGame() {
+                endGame();
+                startGame();
+            }
+            
+            // Set up hole click handlers
+            document.querySelectorAll('.whack-hole').forEach(hole => {
+                hole.addEventListener('click', () => {
+                    if (!gameActive) return;
+                    
+                    const character = hole.querySelector('.whack-character');
+                    if (!character.classList.contains('hidden')) {
+                        // Whacked a character!
+                        character.classList.add('hidden');
+                        hole.classList.add('whack-animation');
+                        
+                        setTimeout(() => {
+                            hole.classList.remove('whack-animation');
+                        }, 200);
+                        
+                        score++;
+                        document.getElementById('whack-score').textContent = score;
+                    }
+                });
+            });
+            
+            // Initialize game
+            startGame();
+        }
+    </script>
+</body>
+</html>
